@@ -51,9 +51,9 @@ def learn_lora_model(model_name: str,
     img_folders = os.listdir(img_path)
     train_steps = 0
     for folder in img_folders:
-        repeat = folder.split("_")[0]
+        repeat = int(folder.split("_")[0])
         img_files = os.listdir(img_path + "/" + folder)
-        max_train_steps += img_files.count("png") * repeat
+        train_steps += img_files.count("png") * repeat
     
     config["max_train_steps"] = int(train_steps / train_batch_size / gradient_accumulation_steps * epoch)
     config["lr_warmup_steps"] = int(config["max_train_steps"] * 0.1)
