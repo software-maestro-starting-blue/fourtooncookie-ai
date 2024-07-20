@@ -1,0 +1,60 @@
+bucket_no_upscale = true
+bucket_reso_steps = 64
+cache_latents = true
+caption_extension = ".txt"
+clip_skip = 1
+dynamo_backend = "no"
+enable_bucket = true
+huber_c = 0.1
+huber_schedule = "snr"
+max_bucket_reso = 2048
+max_data_loader_n_workers = 0
+max_grad_norm = 1
+max_timestep = 1000
+max_token_length = 75
+min_bucket_reso = 256
+multires_noise_discount = 0.3
+network_module = "networks.lora"
+no_half_vae = true
+noise_offset_type = "Original"
+optimizer_args = []
+prior_loss_weight = 1
+resolution = "512,512"
+sample_sampler = "euler_a"
+save_every_n_epochs = 1
+save_model_as = "safetensors"
+scale_weight_norms = 1
+xformers = true
+mixed_precision = "bf16"
+save_precision = "bf16"
+
+logging_dir = ""
+output_dir = ""
+sample_prompts = ""
+train_data_dir = ""
+pretrained_model_name_or_path = ""
+
+output_name = ""
+
+epoch = 1
+gradient_accumulation_steps = 1
+train_batch_size = 1
+
+learning_rate = 0.0001
+text_encoder_lr = 0.0001
+unet_lr = 0.0001
+
+loss_type = "l2"
+lr_scheduler = "cosine"
+lr_scheduler_args = []
+lr_scheduler_num_cycles = 1
+lr_scheduler_power = 1
+
+lr_warmup_steps = 0
+max_train_steps = 0
+
+network_dim = 8
+network_alpha = 8
+network_args = [ "rank_dropout=0", "module_dropout=0",]
+network_dropout = 0
+optimizer_type = "AdamW"

@@ -1,5 +1,18 @@
-from lora_learning_script import start_lora_learning
+from lora_learning_script import learn_lora_model
 
+def test1(): # learn_lora_model 구동 확인 테스트
+    model_name = "test1"
 
-def test1():
-    pass # TODO: 이런 식으로 여러 테스트를 만들어서 그에 대한 모델을 양산 후 검증
+    learn_lora_model(model_name,
+                     epoch=1,
+                     gradient_accumulation_steps=1,
+                     train_batch_size=1,
+                     learning_rate=0.0001,
+                     text_encoder_lr=0.0001,
+                     unet_lr=0.0001,
+                     network_dim=8,
+                     network_alpha=8,
+                     rank_dropout=0,
+                     module_dropout=0,
+                     network_dropout=0,
+                     optimizer_type="AdamW")
