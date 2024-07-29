@@ -1,15 +1,12 @@
 import boto3
+from dotenv import load_dotenv
 import os
 import glob
 from aws_sqs import receive_message, delete_message, send_message
 from sdxl_lora_runner import generate_image_sdxl_with_lora
 
-sqs_client = boto3.client('sqs', region_name='us-east-1',
-                          aws_access_key_id='',
-                          aws_secret_access_key='')
+load_dotenv()
 
-springtosd_queue_url = ''
-sdtospring_queue_url = ''
 
 def get_image_from_dir(diary_id, grid_position):
     folder_path = f"output/{diary_id}_{grid_position}"
