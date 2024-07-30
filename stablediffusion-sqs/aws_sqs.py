@@ -48,14 +48,14 @@ def delete_message(receipt_handle):
 
 
 
-def send_message(diary_id, grid_position, image):
+def send_message(diary_id, grid_position, image_base64):
     try:
         sqs_client.send_message(
             QueueUrl=STABLEDIFFUSION_TO_SPRING_QUEUE_URL,
             MessageBody=json.dumps({
                 'diaryId': diary_id,
                 'gridPosition': grid_position,
-                'image': image
+                'image': image_base64
             }),
             MessageGroupId="reply"
         )

@@ -4,6 +4,7 @@ import os
 import glob
 from aws_sqs import receive_message, delete_message, send_message
 from sdxl_lora_runner import generate_image_sdxl_with_lora
+import base64
 
 load_dotenv()
 
@@ -15,7 +16,9 @@ def get_image_from_dir(diary_id, grid_position):
         return None
     
     with open(f"output/{diary_id}_{grid_position}/{png_files[0]}", 'rb') as f:
-        return f.read()
+        image_bytes = f.read()
+        image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+        return image_base64
 
 
 def run():
@@ -34,9 +37,9 @@ def run():
         output_dir = f"output/{diary_id}_{grid_position}"
 
         generate_image_sdxl_with_lora(lora_model, prompt, output_dir)
-        image = get_image_from_dir(diary_id, grid_position)
+        image_base64 = get_image_from_dir(diary_id, grid_position)
 
-        send_message(diary_id, grid_position, image)
+        send_message(diary_id, grid_position, image_base64)
         delete_message(receipt_handle)
 
 if __name__ == '__main__':
