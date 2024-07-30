@@ -25,12 +25,12 @@ def run():
         if not message:
             continue
 
-        diary_id = message['diary_id']
-        character = message['character']
+        diary_id = message['diaryId']
+        character_id = message['characterId']
         prompt = message['prompt']
-        grid_position = message['grid_position']
+        grid_position = message['gridPosition']
 
-        lora_model = f"lora/model_{character}.safetensors"
+        lora_model = f"lora/model_{character_id}.safetensors"
         output_dir = f"output/{diary_id}_{grid_position}"
 
         generate_image_sdxl_with_lora(lora_model, prompt, output_dir)
