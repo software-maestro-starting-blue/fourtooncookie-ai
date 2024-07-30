@@ -30,24 +30,29 @@ def extract_message(message_body):
 
 def run():
     while True:
-        sleep(3) # 3초동안 대기
+        try:
+            sleep(3) # 3초동안 대기
 
-        messages = receive_messages()
+            messages = receive_messages()
 
-        if not messages:
+            if not messages:
+                continue
+
+            for message_body, message_receipt_handle in messages:
+                diary_id, character_id, prompt, grid_position = extract_message(message_body)
+
+                lora_model = f"lora/model_{character_id}.safetensors"
+                output_dir = f"output/{diary_id}_{grid_position}"
+
+                generate_image_sdxl_with_lora(lora_model, prompt, output_dir)
+                image_base64 = get_image_from_dir(diary_id, grid_position)
+
+                send_message(diary_id, grid_position, image_base64)
+                delete_message(message_receipt_handle)
+        except Exception as e:
+            print("An error occurred:", str(e))
+            sleep(10)
             continue
-
-        for message_body, message_receipt_handle in messages:
-            diary_id, character_id, prompt, grid_position = extract_message(message_body)
-
-            lora_model = f"lora/model_{character_id}.safetensors"
-            output_dir = f"output/{diary_id}_{grid_position}"
-
-            generate_image_sdxl_with_lora(lora_model, prompt, output_dir)
-            image_base64 = get_image_from_dir(diary_id, grid_position)
-
-            send_message(diary_id, grid_position, image_base64)
-            delete_message(message_receipt_handle)
 
 if __name__ == '__main__':
     run()
