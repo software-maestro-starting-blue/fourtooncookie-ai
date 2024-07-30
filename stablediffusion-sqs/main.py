@@ -1,10 +1,12 @@
+from asyncio import sleep
 import boto3
 from dotenv import load_dotenv
 import os
 import glob
-from aws_sqs import receive_message, delete_message, send_message
+from aws_sqs import receive_messages, delete_message, send_message
 from sdxl_lora_runner import generate_image_sdxl_with_lora
 import base64
+import json
 
 load_dotenv()
 
@@ -20,27 +22,30 @@ def get_image_from_dir(diary_id, grid_position):
         image_base64 = base64.b64encode(image_bytes).decode('utf-8')
         return image_base64
 
+def extract_message(message_body):
+    message = json.loads(message_body)
+    return message['diaryId'], message['characterId'], message['prompt'], message['gridPosition']
 
 def run():
     while True:
-        message, receipt_handle = receive_message()
+        sleep(3) # 3초동안 대기
 
-        if not message:
+        messages = receive_messages()
+
+        if not messages:
             continue
 
-        diary_id = message['diaryId']
-        character_id = message['characterId']
-        prompt = message['prompt']
-        grid_position = message['gridPosition']
+        for message_body, message_receipt_handle in messages:
+            diary_id, character_id, prompt, grid_position = extract_message(message_body)
 
-        lora_model = f"lora/model_{character_id}.safetensors"
-        output_dir = f"output/{diary_id}_{grid_position}"
+            lora_model = f"lora/model_{character_id}.safetensors"
+            output_dir = f"output/{diary_id}_{grid_position}"
 
-        generate_image_sdxl_with_lora(lora_model, prompt, output_dir)
-        image_base64 = get_image_from_dir(diary_id, grid_position)
+            generate_image_sdxl_with_lora(lora_model, prompt, output_dir)
+            image_base64 = get_image_from_dir(diary_id, grid_position)
 
-        send_message(diary_id, grid_position, image_base64)
-        delete_message(receipt_handle)
+            send_message(diary_id, grid_position, image_base64)
+            delete_message(message_receipt_handle)
 
 if __name__ == '__main__':
     run()

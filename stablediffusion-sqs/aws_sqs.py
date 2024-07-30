@@ -10,12 +10,14 @@ sqs_client = boto3.client('sqs', region_name='ap-northeast-2')
 SPRING_TO_STABLEDIFFUSION_QUEUE_URL= os.environ.get('SPRING_TO_STABLEDIFFUSION_SQS_URL')
 STABLEDIFFUSION_TO_SPRING_QUEUE_URL = os.environ.get('STABLEDIFFUSION_TO_SPRING_SQS_URL')
 
+NUMBER_OF_MESSAGES_TO_RECEIVE = 5
 
-def receive_message():
+
+def receive_messages():
     try:
         response = sqs_client.receive_message(
             QueueUrl=SPRING_TO_STABLEDIFFUSION_QUEUE_URL,
-            MaxNumberOfMessages=1,
+            MaxNumberOfMessages=NUMBER_OF_MESSAGES_TO_RECEIVE,
             WaitTimeSeconds=20
         )
     
@@ -24,12 +26,8 @@ def receive_message():
         if not messages:
             print("No messages received.")
             return None, None
-    
-        for message in messages:
-            receipt_handle = message['ReceiptHandle']
-            body = message['Body']
-    
-            return body, receipt_handle
+        
+        return [(message['Body'], message['ReceiptHandle']) for message in messages]
     
     except Exception as e:
         print("An error occurred while receiving messages:", str(e))
