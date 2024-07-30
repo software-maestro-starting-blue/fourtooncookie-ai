@@ -20,11 +20,9 @@ def get_image_from_dir(diary_id, grid_position):
     with open(f"output/{diary_id}_{grid_position}/{png_files[0]}", 'rb') as f:
         image_bytes = f.read()
         image_base64 = base64.b64encode(image_bytes).decode('utf-8')
-        f.close()
-
-        os.remove(f"output/{diary_id}_{grid_position}/{png_files[0]}")
-
-        return image_base64
+    
+    os.remove(f"output/{diary_id}_{grid_position}/{png_files[0]}")
+    return image_base64
 
 def extract_message(message_body):
     message = json.loads(message_body)
