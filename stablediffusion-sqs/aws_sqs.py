@@ -7,47 +7,58 @@ load_dotenv()
 
 sqs_client = boto3.client('sqs', region_name='ap-northeast-2')
 
-springtosd_queue_url = os.environ.get('SPRING_TO_STABLEDIFFUSION_SQS_URL')
-sdtospring_queue_url = os.environ.get('STABLEDIFFUSION_TO_SPRING_SQS_URL')
+SPRING_TO_STABLEDIFFUSION_QUEUE_URL= os.environ.get('SPRING_TO_STABLEDIFFUSION_SQS_URL')
+STABLEDIFFUSION_TO_SPRING_QUEUE_URL = os.environ.get('STABLEDIFFUSION_TO_SPRING_SQS_URL')
 
 
 def receive_message():
-    response = sqs_client.receive_message(
-            QueueUrl=springtosd_queue_url,
+    try:
+        response = sqs_client.receive_message(
+            QueueUrl=SPRING_TO_STABLEDIFFUSION_QUEUE_URL,
             MaxNumberOfMessages=1,
             WaitTimeSeconds=20
         )
-
-    messages = response.get('Messages', [])
-
-    if not messages:
-        print("No messages received.")
-        return False
-
-    for message in messages:
-        receipt_handle = message['ReceiptHandle']
-        body = message['Body']
-
-        return body, receipt_handle
+    
+        messages = response.get('Messages', [])
+    
+        if not messages:
+            print("No messages received.")
+            return None, None
+    
+        for message in messages:
+            receipt_handle = message['ReceiptHandle']
+            body = message['Body']
+    
+            return body, receipt_handle
+    
+    except Exception as e:
+        print("An error occurred while receiving messages:", str(e))
+        return None, None
 
 
 def delete_message(receipt_handle):
-    sqs_client.delete_message(
-        QueueUrl=springtosd_queue_url,
-        ReceiptHandle=receipt_handle
-    )
-    print("Deleted message from queue.")
+    try:
+        sqs_client.delete_message(
+            QueueUrl=SPRING_TO_STABLEDIFFUSION_QUEUE_URL,
+            ReceiptHandle=receipt_handle
+        )
+        print("Deleted message from queue.")
+    except Exception as e:
+        print("An error occurred while deleting message:", str(e))
 
 
 
 def send_message(diary_id, grid_position, image):
-    print("Sending image to Spring.")
-    sqs_client.send_message(
-        QueueUrl=sdtospring_queue_url,
-        MessageBody=json.dumps({
-            'diaryId': diary_id,
-            'gridPosition': grid_position,
-            'image': image
-        }),
-        MessageGroupId="reply"
-    )
+    try:
+        sqs_client.send_message(
+            QueueUrl=STABLEDIFFUSION_TO_SPRING_QUEUE_URL,
+            MessageBody=json.dumps({
+                'diaryId': diary_id,
+                'gridPosition': grid_position,
+                'image': image
+            }),
+            MessageGroupId="reply"
+        )
+        print("Sending image to Spring.")
+    except Exception as e:
+        print("An error occurred while sending message:", str(e))
