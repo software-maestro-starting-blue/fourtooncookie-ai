@@ -3,10 +3,10 @@ import boto3
 from dotenv import load_dotenv
 import os
 import glob
-from aws_sqs import receive_messages, delete_message, send_message
-from sdxl_lora_runner import generate_image_sdxl_with_lora
 import base64
 import json
+from aws_sqs import receive_messages, delete_message, send_message
+from sdxl_lora_runner import generate_image_sdxl_with_lora
 
 load_dotenv()
 
@@ -14,12 +14,16 @@ load_dotenv()
 def get_image_from_dir(diary_id, grid_position):
     folder_path = f"output/{diary_id}_{grid_position}"
     png_files = glob.glob(os.path.join(folder_path, '*.png'))
-    if len(png_files) == 0:
+    if not png_files:
         return None
     
     with open(f"output/{diary_id}_{grid_position}/{png_files[0]}", 'rb') as f:
         image_bytes = f.read()
         image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+        f.close()
+
+        os.remove(f"output/{diary_id}_{grid_position}/{png_files[0]}")
+
         return image_base64
 
 def extract_message(message_body):
