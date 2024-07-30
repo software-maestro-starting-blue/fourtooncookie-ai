@@ -5,9 +5,7 @@ import json
 
 load_dotenv()
 
-sqs_client = boto3.client('sqs', region_name='ap-northeast-2',
-                          aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
-                          aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'))
+sqs_client = boto3.client('sqs', region_name='ap-northeast-2')
 
 springtosd_queue_url = os.environ.get('SPRING_TO_STABLEDIFFUSION_SQS_URL')
 sdtospring_queue_url = os.environ.get('STABLEDIFFUSION_TO_SPRING_SQS_URL')
