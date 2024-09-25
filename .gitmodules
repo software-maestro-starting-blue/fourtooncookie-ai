@@ -1,3 +1,3 @@
-[submodule "stablediffusion-sqs/sd-scripts"]
-	path = stablediffusion-sqs/sd-scripts
+[submodule "gpu-server/sd-scripts"]
+	path = gpu-server/sd-scripts
 	url = https://github.com/kohya-ss/sd-scripts.git
