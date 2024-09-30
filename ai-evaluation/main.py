@@ -11,7 +11,7 @@ openai: OpenAI = OpenAI()
 
 llm_service: LLMGenerator = GPT4oLLMGenerator(openai)
 
-llm_prompting_service: LLMPromptingSerivce = None
+llm_prompting_service: LLMPromptingSerivce = None # 테스트를 진행할 prompting service
 
 llm_rating_services: list[LLMRatingService] = []
 
@@ -45,7 +45,13 @@ def main():
         }
         for (user_input, llm_result), ratings in zip(data_sets, rating_results)
     ]
-
+    
+    # 각 rating의 평균을 출력한다.
+    for i, llm_rating_service in enumerate(llm_rating_services):
+        ratings = [result["ratings"][i] for result in results]
+        average_rating = sum(ratings) / len(ratings)
+        print(f"Average rating of {llm_rating_service.__class__.__name__}: {average_rating}")
+    
     # 결과를 json으로 저장한다.
     f = open("rating_result.json", "w")
     json.dump(results, f)
