@@ -1,4 +1,7 @@
+import os
+
 from openai import OpenAI
+from portkey_ai import Portkey, createHeaders, PORTKEY_GATEWAY_URL
 
 from llm.generator.llm_generator import LLMGenerator
 from llm.generator.gpt4o_llm_generator import GPT4oLLMGenerator
@@ -7,7 +10,21 @@ from llm.rating.llm_rating_service import LLMRatingService
 
 import json
 
-openai: OpenAI = OpenAI()
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+PORTKEY_API_KEY = os.environ.get("PORTKEY_API_KEY")
+
+openai: OpenAI = OpenAI(
+    api_key=OPENAI_API_KEY,
+    base_url=PORTKEY_GATEWAY_URL,
+    default_headers=createHeaders(
+        provider="openai",
+        api_key=PORTKEY_API_KEY
+    )
+)
+
+portkey: Portkey = Portkey(
+    api_key=PORTKEY_API_KEY,
+)
 
 llm_service: LLMGenerator = GPT4oLLMGenerator(openai)
 
