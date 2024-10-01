@@ -20,13 +20,13 @@ def receive_messages():
     
         if not messages:
             print("No messages received.")
-            return None, None
+            return None
         
         return [(message['Body'], message['ReceiptHandle']) for message in messages]
     
     except Exception as e:
         print("An error occurred while receiving messages:", str(e))
-        return None, None
+        return None
 
 
 def delete_message(receipt_handle):
