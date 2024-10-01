@@ -1,6 +1,5 @@
 from asyncio import sleep
 import boto3
-from dotenv import load_dotenv
 import os
 import glob
 import base64
@@ -8,7 +7,6 @@ import json
 from aws_sqs import receive_messages, delete_message, send_message
 from sdxl_lora_runner import generate_image_sdxl_with_lora
 
-load_dotenv()
 
 
 def get_image_from_dir(diary_id, grid_position):

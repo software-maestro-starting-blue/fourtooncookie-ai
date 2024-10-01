@@ -1,13 +1,9 @@
 import boto3
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 sqs_client = boto3.client('sqs', region_name='ap-northeast-2')
 
-SPRING_TO_STABLEDIFFUSION_QUEUE_URL= os.environ.get('SPRING_TO_STABLEDIFFUSION_SQS_URL')
-STABLEDIFFUSION_TO_SPRING_QUEUE_URL = os.environ.get('STABLEDIFFUSION_TO_SPRING_SQS_URL')
+SPRING_TO_STABLEDIFFUSION_QUEUE_URL= os.environ['SPRING_TO_STABLEDIFFUSION_QUEUE_URL']
 
 NUMBER_OF_MESSAGES_TO_RECEIVE = 5
 
