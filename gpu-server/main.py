@@ -1,4 +1,4 @@
-from asyncio import sleep
+import time
 import os
 import glob
 import json
@@ -32,7 +32,7 @@ def delete_output_images():
 
 def run():
     while True:
-        sleep(3) # 3초동안 대기
+        time.sleep(3) # 3초동안 대기
 
         messages = receive_messages()
 
