@@ -19,16 +19,15 @@ def extract_message(message_body):
     return message['diaryId'], message['characterId'], message['prompt'], message['gridPosition']
 
 def get_image_path(diary_id, grid_position):
-    folder_path = f"output/{diary_id}_{grid_position}"
+    folder_path = f"./output/{diary_id}_{grid_position}"
     png_files = glob.glob(os.path.join(folder_path, '*.png'))
     if not png_files:
         return None
     
-    return f"./output/{diary_id}_{grid_position}/{png_files[0]}"
+    return png_files[0]
 
 def delete_output_images():
-    for file in glob.glob('output/*'):
-        os.remove(file)
+    pass
 
 def run():
     while True:
@@ -42,8 +41,8 @@ def run():
         for message_body, message_receipt_handle in messages:
             diary_id, character_id, prompt, grid_position = extract_message(message_body)
 
-            lora_model = f"lora/model_{character_id}.safetensors"
-            output_dir = f"output/{diary_id}_{grid_position}"
+            lora_model = f"./lora/model_{character_id}.safetensors"
+            output_dir = f"./output/{diary_id}_{grid_position}"
 
             try:
                 generate_image_sdxl_with_lora(lora_model, prompt, output_dir)

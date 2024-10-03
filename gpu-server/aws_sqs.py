@@ -15,7 +15,8 @@ def receive_messages():
         response = sqs_client.receive_message(
             QueueUrl=SPRING_TO_STABLEDIFFUSION_QUEUE_URL,
             MaxNumberOfMessages=NUMBER_OF_MESSAGES_TO_RECEIVE,
-            WaitTimeSeconds=20
+            WaitTimeSeconds=20,
+            VisibilityTimeout=5*60
         )
     
         messages = response.get('Messages', [])
@@ -51,7 +52,8 @@ def send_image_success_message(diary_id: int, grid_position: int):
                 'diaryId': diary_id,
                 'gridPosition': grid_position,
                 'status': True
-            })
+            }),
+            MessageGroupId=str(diary_id)
         )
         print("Sent image success message to queue.")
     except Exception as e:
@@ -67,7 +69,8 @@ def send_image_failure_message(diary_id: int, grid_position: int):
                 'diaryId': diary_id,
                 'gridPosition': grid_position,
                 'status': False
-            })
+            }),
+            MessageGroupId=str(diary_id)
         )
         print("Sent image failure message to queue.")
     except Exception as e:
