@@ -2,7 +2,7 @@ import time
 import os
 import glob
 import json
-from aws_sqs import receive_messages, delete_message
+from aws_sqs import receive_messages, delete_message, send_image_success_message, send_image_failure_message
 from aws_s3 import upload_image_to_s3
 from sdxl_lora_runner import generate_image_sdxl_with_lora
 import sentry_sdk
@@ -45,12 +45,20 @@ def run():
             lora_model = f"lora/model_{character_id}.safetensors"
             output_dir = f"output/{diary_id}_{grid_position}"
 
-            generate_image_sdxl_with_lora(lora_model, prompt, output_dir)
-            image_path = get_image_path(diary_id, grid_position)
+            try:
+                generate_image_sdxl_with_lora(lora_model, prompt, output_dir)
+                image_path = get_image_path(diary_id, grid_position)
 
-            upload_image_to_s3(image_path, diary_id, grid_position)
+                upload_image_to_s3(image_path, diary_id, grid_position)
 
-            delete_message(message_receipt_handle)
+                send_image_success_message(diary_id, grid_position)
+            except KeyboardInterrupt as e:
+                raise e
+            except Exception as e:
+                send_image_failure_message(diary_id, grid_position)
+                sentry_sdk.capture_exception(e)
+            finally:
+                delete_message(message_receipt_handle)
 
 if __name__ == '__main__':
     try:
