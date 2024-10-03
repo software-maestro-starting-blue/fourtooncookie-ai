@@ -51,7 +51,7 @@ def send_image_success_message(diary_id: int, grid_position: int):
             MessageBody=json.dumps({
                 'diaryId': diary_id,
                 'gridPosition': grid_position,
-                'status': True
+                'isSuccess': True
             }),
             MessageGroupId=str(diary_id)
         )
@@ -68,7 +68,7 @@ def send_image_failure_message(diary_id: int, grid_position: int):
             MessageBody=json.dumps({
                 'diaryId': diary_id,
                 'gridPosition': grid_position,
-                'status': False
+                'isSuccess': False
             }),
             MessageGroupId=str(diary_id)
         )
