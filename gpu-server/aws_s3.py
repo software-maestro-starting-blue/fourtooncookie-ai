@@ -15,3 +15,4 @@ def upload_image_to_s3(local_file_path, diary_id, grid_position):
         print("Uploaded image to S3.")
     except Exception as e:
         print("An error occurred while uploading image to S3:", str(e))
+        raise e

@@ -40,6 +40,7 @@ def delete_message(receipt_handle):
         print("Deleted message from queue.")
     except Exception as e:
         print("An error occurred while deleting message:", str(e))
+        raise e
 
 
 def send_image_success_message(diary_id: int, grid_position: int):
@@ -55,6 +56,7 @@ def send_image_success_message(diary_id: int, grid_position: int):
         print("Sent image success message to queue.")
     except Exception as e:
         print("An error occurred while sending image success message:", str(e))
+        raise e
 
 
 def send_image_failure_message(diary_id: int, grid_position: int):
@@ -70,3 +72,4 @@ def send_image_failure_message(diary_id: int, grid_position: int):
         print("Sent image failure message to queue.")
     except Exception as e:
         print("An error occurred while sending image failure message:", str(e))
+        raise e
