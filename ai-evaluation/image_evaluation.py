@@ -115,7 +115,7 @@ def process_folder(folder_path):
         print(f"Folder {folder_path} already processed")
         return
 
-    if txt_file_path:
+    if txt_file_path is None or len(png_files) == 0:
         return
     
     # txt 파일을 읽어 필요한 정보를 가공 (config 역할)
@@ -123,9 +123,8 @@ def process_folder(folder_path):
     
     # 가공한 정보를 활용해 png 파일들로 task 생성
     tasks = []
-    for png_file in png_files:
+    for png_file in png_files[:1]:
         tasks.append(process_png_file(png_file, config_data))
-    
 
     # batch_datas.jsonl 파일 생성
     batch_datas_file_name = os.path.join(folder_path, BATCH_JSONL_FILE_NAME)
