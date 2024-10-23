@@ -95,6 +95,8 @@ def process_folder(folder_path):
     txt_file_path = None
     png_files = []
 
+    is_processed = False
+
     # 하위 폴더 내의 모든 파일을 확인하여 txt 파일과 png 파일을 구분
     for file_name in os.listdir(folder_path):
         file_path = os.path.join(folder_path, file_name)
@@ -104,7 +106,15 @@ def process_folder(folder_path):
         
         elif file_name.endswith(".png"):
             png_files.append(file_path)  # png 파일 경로 리스트에 저장
+        
+        elif file_name == BATCH_JOB_JSON_FILE_NAME:
+            is_processed = True
     
+    # 이미 처리된 폴더인 경우 처리하지 않음
+    if is_processed:
+        print(f"Folder {folder_path} already processed")
+        return
+
     if txt_file_path:
         return
     
