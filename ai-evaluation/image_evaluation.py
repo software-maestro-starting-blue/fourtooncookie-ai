@@ -156,6 +156,7 @@ def process_all_folders(root_folder):
         folder_path = os.path.join(root_folder, folder_name)
         
         if os.path.isdir(folder_path):
+            print(f"Processing folder: {folder_path}")
             process_folder(folder_path)
 
 if __name__ == "__main__":
