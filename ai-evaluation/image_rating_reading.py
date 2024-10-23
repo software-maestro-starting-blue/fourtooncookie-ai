@@ -7,14 +7,20 @@ client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 BATCH_RESULT_FOLDER_PATH = "./"
 
 def process_batch(batch_job_id):
-    response = client.files.content(batch_job_id)
+    if os.path.isfile(os.path.join(BATCH_RESULT_FOLDER_PATH, batch_job_id + ".jsonl")):
+        print(f"Batch job {batch_job_id} already processed")
+        return True
+
+    response = client.batches.retrieve(batch_job_id)
 
     status = response["status"]
 
     if status == "failed" or status == "expired" or status == "cancelled" or status == "completed":
         print(f"Batch job {batch_job_id} finished")
+        output_file_id = response["output_file_id"]
+        result = client.files.content(output_file_id)
         with open(os.path.join(BATCH_RESULT_FOLDER_PATH, batch_job_id + ".jsonl"), "w") as f:
-            f.write(response.text)
+            f.write(result.text)
     else:
         return False
 
